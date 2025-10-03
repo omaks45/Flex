@@ -1,10 +1,11 @@
 /* eslint-disable prettier/prettier */
 import { Module } from '@nestjs/common';
-//import { HostawayService } from './hostaway.service';
-//import { HostawayController } from './hostaway.controller';
+import { ConfigModule } from '@nestjs/config';
+import { HostawayService } from './hostaway.service';
 
 @Module({
-  controllers: [],
-  providers: [],
+  imports: [ConfigModule],
+  providers: [HostawayService],
+  exports: [HostawayService],
 })
 export class HostawayModule {}

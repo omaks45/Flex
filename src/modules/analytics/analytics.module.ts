@@ -1,9 +1,15 @@
+/* eslint-disable prettier/prettier */
 import { Module } from '@nestjs/common';
-import { AnalyticsService } from './analytics.service';
-import { AnalyticsController } from './analytics.controller';
+import { MongooseModule } from '@nestjs/mongoose';
+import { Review, ReviewSchema } from '../reviews/entities/review.entity';
 
 @Module({
-  controllers: [AnalyticsController],
-  providers: [AnalyticsService],
+  imports: [
+    MongooseModule.forFeature([
+      { name: Review.name, schema: ReviewSchema },
+    ]),
+  ],
+  controllers: [],
+  providers: [],
 })
 export class AnalyticsModule {}
