@@ -44,20 +44,20 @@ export class HostawayService {
         );
 
         if (response.data?.result && response.data.result.length > 0) {
-            this.logger.log(`✅ Fetched ${response.data.result.length} reviews from Hostaway API`);
+            this.logger.log(`Fetched ${response.data.result.length} reviews from Hostaway API`);
             return response.data.result;
         }
 
         // API returned no data (sandboxed)
-        this.logger.warn('⚠️  Hostaway API returned no reviews (sandboxed). Using mock data...');
+        this.logger.warn('Hostaway API returned no reviews (sandboxed). Using mock data...');
         return this.getMockReviews();
 
         } catch (error) {
         // 403 is expected for sandboxed API
         if (error.response?.status === 403) {
-            this.logger.warn('⚠️  Hostaway API access restricted (403 - Expected for sandbox). Using mock data...');
+            this.logger.warn('Hostaway API access restricted (403 - Expected for sandbox). Using mock data...');
         } else {
-            this.logger.error(`❌ Failed to fetch from Hostaway API: ${error.message}`);
+            this.logger.error(`Failed to fetch from Hostaway API: ${error.message}`);
         }
         
         return this.getMockReviews();
@@ -133,15 +133,15 @@ export class HostawayService {
             const fileContent = fs.readFileSync(mockDataPath, 'utf-8');
             const mockData = JSON.parse(fileContent);
             
-            this.logger.log(`✅ Loaded ${mockData.result?.length || 0} mock reviews from file`);
+            this.logger.log(`Loaded ${mockData.result?.length || 0} mock reviews from file`);
             return mockData.result || [];
         }
-        
-        this.logger.warn('⚠️  Mock data file not found. Using hardcoded fallback data...');
+
+        this.logger.warn('Mock data file not found. Using hardcoded fallback data...');
         return this.getHardcodedMockData();
 
         } catch (error) {
-        this.logger.error(`❌ Failed to load mock data file: ${error.message}`);
+        this.logger.error(`Failed to load mock data file: ${error.message}`);
         this.logger.log('Using hardcoded fallback data...');
         return this.getHardcodedMockData();
         }
@@ -151,7 +151,7 @@ export class HostawayService {
      * Hardcoded mock data (final fallback)
      */
     private getHardcodedMockData(): HostawayReview[] {
-        this.logger.log('📦 Using hardcoded mock data (25 reviews)');
+        this.logger.log('Using hardcoded mock data (25 reviews)');
         
         return [
         {

@@ -29,3 +29,11 @@ export class BulkApproveDto {
     @IsString()
     approvedBy?: string;
 }
+
+// NEW DTO for approve endpoint
+export class ApproveReviewDto {
+    @ApiPropertyOptional({ example: 'admin@flexliving.com' })
+    @IsOptional()
+    @IsString()
+    approvedBy?: string;
+}

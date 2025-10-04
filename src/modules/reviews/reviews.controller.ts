@@ -21,7 +21,7 @@ import {
 import { ReviewsService } from './reviews.service';
 import { CreateReviewDto } from './dto/create-review.dto';
 import { FilterReviewDto } from './dto/filter-review.dto';
-import { UpdateReviewDto, BulkApproveDto } from './dto/update-review.dto';
+import { UpdateReviewDto, BulkApproveDto, ApproveReviewDto } from './dto/update-review.dto';
 
 @ApiTags('reviews')
 @Controller('reviews')
@@ -150,19 +150,23 @@ export class ReviewsController {
   }
 
   @Patch(':id/approve')
-  @ApiOperation({ summary: 'Approve a review for public display' })
-  @ApiParam({ name: 'id', description: 'Review ID' })
-  @ApiResponse({ status: 200, description: 'Review approved successfully' })
-  @ApiResponse({ status: 404, description: 'Review not found' })
-  approve(
-    @Param('id') id: string,
-    @Body('approvedBy') approvedBy?: string,
-  ) {
-    return this.reviewsService.update(id, {
-      isApprovedForPublic: true,
-      approvedBy: approvedBy || 'admin',
-    });
-  }
+@ApiOperation({ 
+  summary: 'Approve a review for public display',
+  description: 'Approve by either MongoDB _id or Hostaway ID. The system will automatically detect which type of ID is provided.'
+})
+@ApiParam({ 
+  name: 'id', 
+  description: 'Review MongoDB _id or Hostaway ID (numeric)',
+  example: '507f1f77bcf86cd799439011 or 7453'
+})
+@ApiResponse({ status: 200, description: 'Review approved successfully' })
+@ApiResponse({ status: 404, description: 'Review not found' })
+async approve(
+  @Param('id') id: string,
+  @Body() approveReviewDto: ApproveReviewDto,
+) {
+  return this.reviewsService.approveReview(id, approveReviewDto.approvedBy);
+}
 
   @Post('bulk-approve')
   @HttpCode(HttpStatus.OK)

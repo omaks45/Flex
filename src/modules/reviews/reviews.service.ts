@@ -154,6 +154,55 @@ export class ReviewsService {
   }
 
   /**
+   * Approve review by either MongoDB ID or Hostaway ID
+   * Time Complexity: O(1)
+   */
+  async approveReview(id: string, approvedBy?: string) {
+    let review;
+    
+    // Check if id is numeric (Hostaway ID)
+    const isNumeric = /^\d+$/.test(id);
+    
+    if (isNumeric) {
+      // Find by Hostaway ID
+      const hostawayId = parseInt(id, 10);
+      review = await this.reviewsRepository.findByHostawayId(hostawayId);
+      
+      if (!review) {
+        throw new NotFoundException(
+          `Review with Hostaway ID ${hostawayId} not found`,
+        );
+      }
+    } else {
+      // Find by MongoDB _id
+      review = await this.reviewsRepository.findById(id);
+      
+      if (!review) {
+        throw new NotFoundException(`Review with ID ${id} not found`);
+      }
+    }
+
+    // Update the review
+    const updateData = {
+      isApprovedForPublic: true,
+      approvedBy: approvedBy || 'admin',
+      approvedAt: new Date(),
+    };
+
+    const updated = await this.reviewsRepository.update(
+      review._id.toString(),
+      updateData,
+    );
+
+    await this.invalidateCache();
+
+    return {
+      message: 'Review approved successfully',
+      review: updated,
+    };
+  }
+
+  /**
    * Bulk approve reviews
    * Time Complexity: O(n)
    */
